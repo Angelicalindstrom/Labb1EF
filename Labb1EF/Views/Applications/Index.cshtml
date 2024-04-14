@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Labb1EF.Models.Application>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Applications</h1>
+
+<p>
+    <a asp-action="Create">Create New Application</a>
+</p>
+
+
+@* ** Filtering direct here in Index with ForEachLoop by EMployeeId, All or By ID/Name ** *@
+@using (Html.BeginForm("Index", "Applications", FormMethod.Get))
+{
+        <div class="form-group">
+            <h2>Filter Applications by Employee and StartDate</h2>
+            <label>Select Employee Name:</label>
+            <select name="employeeId" class="form-control">
+                <option value="">All Employees</option>
+            @foreach (var employee in ViewBag.Employees)
+            {
+                        <option value="@employee.EmployeeId">@employee.FirstName @employee.LastName</option>
+            }
+            </select>
+
+            <label>StartDate:</label>
+            <select name="startDate" class="form-control">
+            <option value="">All Dates</option> @* för att kunna välja Alla datum *@
+            @if (ViewBag.StartDates != null)
+            {
+                foreach (var date in ViewBag.StartDates)
+                {
+                    @* Skriver ut Startdate men Text(månad) *@
+                    <option value="@date.Value">@date.Text</option>
+                }
+            }
+    </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationDateStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationDateEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubmittDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reason)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Employee)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ApplicationDateStart)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ApplicationDateEnd)</td>
+                    <td>@Html.DisplayFor(modelItem => item.SubmittDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Message)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Reason.ReasonTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Employee.FirstName) @Html.DisplayFor(modelItem => item.Employee.LastName)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ApplicationId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ApplicationId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ApplicationId">Delete</a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
